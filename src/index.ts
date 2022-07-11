@@ -6,7 +6,7 @@ import session from 'express-session'
 const PORT=process.env.PORT || 8080
 const app = express()
 
-//header
+//header & configuração do CORS
     app.use((req, res, next) => {
          //alterar Acess control para o dominio do blog quando estiver pronto!
         res.header('Access-Control-Allow-Origin', '*')
