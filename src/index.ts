@@ -6,6 +6,7 @@ import session from 'express-session'
 const PORT=process.env.PORT || 8080
 const app = express()
 
+
 //header & configuração do CORS
     app.use((req, res, next) => {
          //alterar Acess control para o dominio do blog quando estiver pronto!
@@ -18,7 +19,7 @@ const app = express()
     }
     next();
 })
-//session
+//session e validade
 app.use(session({secret:`asklfadfjskdfjsdfklsdjfklsdjnlcvxviibidff`,cookie:{maxAge:70000}}))
 //json 
 app.use(bodyParser.urlencoded({
@@ -28,7 +29,9 @@ app.use(bodyParser.json())
 
 
 app.get(`/`,(req,res)=>{
-    res.status(200).send({message:`sucess`})
+
+  
+    res.status(200).send(`yes`)
 })
 
 app.use((req,res,next)=>{
