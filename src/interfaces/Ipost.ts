@@ -1,4 +1,4 @@
-export interface Inews{
+export interface Ipost{
     titulo:string
     noticia:{}
     data: Date

@@ -3,7 +3,7 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import session from 'express-session'
 //rotas
-import noticia from './routes/noticias'
+import posts from './routes/postsnav'
 //configurações
 const PORT = process.env.PORT || 8080
 const app = express()
@@ -31,8 +31,10 @@ app.use(bodyParser.json())
 
 
 
-app.use('/noticias', noticia)
-
+app.use('/posts', posts)
+app.use((req,res)=>{
+    res.status(404).send('Not found')
+})
 
 
 app.listen(PORT, () => { console.log(`server on in port ${PORT}`) })

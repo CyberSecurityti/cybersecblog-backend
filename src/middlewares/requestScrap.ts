@@ -5,9 +5,6 @@ import { NextFunction } from "express";
 //url
 const URL = 'https://jojo-api.herokuapp.com/jojostands/'
 
-
-
-
 export default function (req: any, res: any, next: NextFunction) {
     axios.get(URL)
         .then((response) => {
