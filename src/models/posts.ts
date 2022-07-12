@@ -1,6 +1,6 @@
 import mongoose from "./db";
 
-const userSchema = new mongoose.Schema({
+const postSchema = new mongoose.Schema({
      titulo:String,
     noticia:String,
     data: Date,
@@ -9,4 +9,4 @@ const userSchema = new mongoose.Schema({
    
 }, { collection: 'posts' }
 );
-export default userSchema
+export default postSchema

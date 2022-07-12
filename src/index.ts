@@ -5,7 +5,7 @@ import session from 'express-session'
 //rotas
 import posts from './routes/postsnav'
 //configurações
-const PORT = process.env.PORT || 8080//process.env.PORT
+const PORT = process.env.PORT || 8080
 const app = express()
 
 //header & configuração do CORS
@@ -20,8 +20,9 @@ app.use((req, res, next) => {
     }
     next();
 })
+app.set(`view engine`,`ejs`)
 //session e validade
-app.use(session({ secret: `asklfadfjskdfjsdfklsdjfklsdjnlcvxviibidff`, cookie: { maxAge: 70000 } }))
+app.use(session({ secret: `asklfadfjskdfjsdfklsdjfklsdjnlcvxviibidff`, cookie: { maxAge: 70000 }}))
 //json 
 app.use(bodyParser.urlencoded({
     extended: true
@@ -31,6 +32,10 @@ app.use(bodyParser.json())
 
 
 app.use('/posts', posts)
+app.get(`/`,(req,res)=>{
+
+    res.render(`index.ejs`)
+})
 app.use((req,res)=>{
     res.status(404).send('Not found')
 })
