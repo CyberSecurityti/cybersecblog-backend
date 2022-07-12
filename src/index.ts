@@ -8,7 +8,6 @@ import posts from './routes/postsnav'
 const PORT = process.env.PORT || 8080
 const app = express()
 
-
 //header & configuração do CORS
 app.use((req, res, next) => {
     //alterar Acess control para o dominio do blog quando estiver pronto!
