@@ -5,7 +5,7 @@ import session from 'express-session'
 //rotas
 import posts from './routes/postsnav'
 //configurações
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 8080//process.env.PORT para conteiners 
 const app = express()
 
 //header & configuração do CORS
