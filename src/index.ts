@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken'
 //rotas
 import posts from './routes/postsnav'
 import adm from './routes/adm'
+import { limiter } from './util/limitIp'
 
 //configurações
 const PORT = process.env.PORT || 8080
@@ -26,9 +27,10 @@ app.use((req, res, next) => {
     }
     next();
 })
+//view engine 
 app.set(`view engine`,`ejs`)
-//session e validade
-
+//limiter
+app.use(limiter)
 //json 
 app.use(bodyParser.urlencoded({
     extended: true
