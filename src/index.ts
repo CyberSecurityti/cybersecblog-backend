@@ -1,13 +1,19 @@
 //libs
 import express from 'express'
 import bodyParser from 'body-parser'
-import session from 'express-session'
+import dotenv from 'dotenv'
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 //rotas
 import posts from './routes/postsnav'
+import adm from './routes/adm'
+
 //configurações
 const PORT = process.env.PORT || 8080
 const app = express()
 
+
+dotenv.config()
 //header & configuração do CORS
 app.use((req, res, next) => {
     //alterar Acess control para o dominio do blog quando estiver pronto!
@@ -22,7 +28,7 @@ app.use((req, res, next) => {
 })
 app.set(`view engine`,`ejs`)
 //session e validade
-app.use(session({ secret: `asklfadfjskdfjsdfklsdjfklsdjnlcvxviibidff`, cookie: { maxAge: 70000 }}))
+
 //json 
 app.use(bodyParser.urlencoded({
     extended: true
@@ -32,6 +38,8 @@ app.use(bodyParser.json())
 
 
 app.use('/posts', posts)
+
+app.use('/adm', adm)
 app.get(`/`,(req,res)=>{
 
     res.render(`index.ejs`)
