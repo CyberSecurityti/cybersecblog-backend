@@ -7,8 +7,7 @@ import jwt from 'jsonwebtoken'
 //rotas
 import posts from './routes/postsnav'
 import adm from './routes/adm'
-import { limiter } from './util/limitIp'
-
+import { limiter } from './util/limiter'
 //configurações
 const PORT = process.env.PORT || 8080
 const app = express()
