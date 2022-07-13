@@ -1,11 +1,13 @@
 import express from 'express'
 import { Ipost } from '../interfaces/Ipost'
+import { Iuser } from '../interfaces/Iuser'
 import mongoose from '../models/db'
 import postSchema from '../models/posts'
-
+import userSchema from '../models/users'
 const adm = express()
 
-//ler dados
+//posts
+//READ
 adm.get('/posts', async (req, res) => {
     const posts = mongoose.model('posts', postSchema, 'posts')
 
@@ -28,8 +30,8 @@ adm.get('/post/:id', async (req, res) => {
     }
 })
 
-//alterar e criar dados
 
+//CREATE
 adm.post(`/post/create`, async (req, res) => {
 
     const insertPost: Ipost = {
@@ -48,14 +50,14 @@ adm.post(`/post/create`, async (req, res) => {
         res.sendStatus(400)
     }
 })
-
-adm.get('/post/delete/:id', async (req, res) => {
+//DELETE
+adm.delete('/post/delete/', async (req, res) => {
 
     const posts = mongoose.model('posts', postSchema, 'posts')
     try {
-        let data = await posts.findById(req.params.id)
+        let data = await posts.findById(req.body.id)
         if (data != null) {
-            await posts.deleteOne({ _id: req.params.id })
+            await posts.deleteOne({ _id: req.body.id })
             res.json({ msg: `deleted` })
         } else {
             res.json({ message: 'post já foi excluido' })
@@ -65,7 +67,8 @@ adm.get('/post/delete/:id', async (req, res) => {
         res.sendStatus(400)
     }
 })
-adm.get('/post/edit/:id', async (req, res) => {
+//UPDATE
+adm.put('/post/update/', async (req, res) => {
     const updatePost: Ipost = {
         titulo: req.body.titulo,
         noticia: req.body.noticia,
@@ -75,9 +78,9 @@ adm.get('/post/edit/:id', async (req, res) => {
     }
     const posts = mongoose.model('posts', postSchema, 'posts')
     try {
-        let data = await posts.findById(req.params.id)
+        let data = await posts.findById(req.body.id)
         if (data != null) {
-            await posts.updateOne({ _id: req.params.id }, updatePost)
+            await posts.updateOne({ _id: req.body.id }, updatePost)
 
             res.json({ msg: `${data.titulo} atualizado` })
         } else {
@@ -89,5 +92,23 @@ adm.get('/post/edit/:id', async (req, res) => {
     }
 })
 
+//users
+adm.post('/user/create',async (req,res)=>{
+    const insertUser: Iuser = {
+        nome: req.body.nome,
+        email: req.body.email,
+        senha: req.body.senha
+   
+    }
+    const users = mongoose.model('users', userSchema, 'users')
+    const user = new users(insertUser)
+    try {
+        await user.save()
+        res.json({ message: `user ${req.body.nome} criado` })
+    } catch (err) {
+        res.sendStatus(400)
+    }
+
+})
 
 export default adm
