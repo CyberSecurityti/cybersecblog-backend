@@ -4,6 +4,9 @@ import { Iuser } from '../interfaces/Iuser'
 import mongoose from '../models/db'
 import postSchema from '../models/posts'
 import userSchema from '../models/users'
+import crypt from '../util/crypt'
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 const adm = express()
 
 //posts
@@ -93,22 +96,72 @@ adm.put('/post/update/', async (req, res) => {
 })
 
 //users
-adm.post('/user/create',async (req,res)=>{
-    const insertUser: Iuser = {
-        nome: req.body.nome,
-        email: req.body.email,
-        senha: req.body.senha
-   
-    }
+adm.post('/user/create', async (req, res) => {
+
+    const { nome, email, senha, senhaconfirm } = req.body
     const users = mongoose.model('users', userSchema, 'users')
+    const userexist = await users.find({ nome: nome })
+    const mailexist = await users.find({ email: email })
+
+    //tratamento da request
+    if (!nome || !senha || !email || senhaconfirm) {
+        return res.status(422).json({ message: "preencha todos os valores" })
+    }
+    if (senhaconfirm != senha) {
+        return res.status(422).json({ message: "senhas não são iguais" })
+    }
+    if (userexist.length > 0) {
+        return res.status(422).json({ message: 'usuario já existe' })
+    }
+    if (mailexist.length > 0) {
+        return res.status(422).json({ message: 'email já cadastrado' })
+    }
+
+    const senhahash = await crypt(senha)
+    const insertUser: Iuser = {
+
+        nome: nome,
+        email: email,
+        senha: senhahash
+
+    }
     const user = new users(insertUser)
     try {
         await user.save()
         res.json({ message: `user ${req.body.nome} criado` })
     } catch (err) {
-        res.sendStatus(400)
+        res.status(501).json({ message: 'erro interno, tente novamente mais tarde' })
     }
 
+
+
+})
+adm.post('/user/login', async (req, res) => {
+    const { email, senha } = req.body
+    if (!senha || !email) {
+        return res.status(422).json({ message: "preencha todos os valores" })
+    }
+    const users = mongoose.model('users', userSchema, 'users')
+    const user = await users.findOne({ email: email })
+    if (!user) {
+        return res.status(404).json({ message: "usuário não encontrado" })
+
+    }
+
+    const checkpassword = bcrypt.compare(senha, user.senha || '')
+    if (!checkpassword) {
+        return res.status(422).json({ message: 'senha incorreta' })
+    }
+    try {
+        const secret = process.env.SECRET
+        if (secret) {
+            const token = jwt.sign({
+                id: user._id
+            }, secret)
+        }
+    } catch (err) {
+        res.status(501).json({ message: "erro interno" })
+    }
 })
 
 export default adm
