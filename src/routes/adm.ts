@@ -7,6 +7,7 @@ import userSchema from '../models/users'
 import crypt from '../util/crypt'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import checkToken from '../middlewares/checkToken'
 const adm = express()
 
 //posts
@@ -35,7 +36,7 @@ adm.get('/post/:id', async (req, res) => {
 
 
 //CREATE
-adm.post(`/post/create`, async (req, res) => {
+adm.post(`/post/create`, checkToken, async (req, res) => {
 
     const insertPost: Ipost = {
         titulo: req.body.titulo,
@@ -158,6 +159,7 @@ adm.post('/user/login', async (req, res) => {
             const token = jwt.sign({
                 id: user._id
             }, secret)
+            res.status(200).json({ message: "logado com sucesso", token })
         }
     } catch (err) {
         res.status(501).json({ message: "erro interno" })
