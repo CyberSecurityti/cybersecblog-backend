@@ -13,7 +13,7 @@ const adm = express()
 //posts
 
 //READ
-adm.get('/posts', async (req, res) => {
+adm.get('/posts',checkToken ,async (req, res) => {
     const posts = mongoose.model('posts', postSchema, 'posts')
 
     try {
@@ -23,7 +23,7 @@ adm.get('/posts', async (req, res) => {
         res.sendStatus(400)
     }
 })
-adm.get('/post/:id', async (req, res) => {
+adm.get('/post/:id',checkToken ,async (req, res) => {
     const posts = mongoose.model('posts', postSchema, 'posts')
 
     try {
