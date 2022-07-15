@@ -11,6 +11,7 @@ import checkToken from '../middlewares/checkToken'
 const adm = express()
 
 //posts
+
 //READ
 adm.get('/posts', async (req, res) => {
     const posts = mongoose.model('posts', postSchema, 'posts')
@@ -55,7 +56,7 @@ adm.post(`/post/create`, checkToken, async (req, res) => {
     }
 })
 //DELETE
-adm.delete('/post/delete/', async (req, res) => {
+adm.delete('/post/delete/', checkToken, async (req, res) => {
 
     const posts = mongoose.model('posts', postSchema, 'posts')
     try {
@@ -72,7 +73,7 @@ adm.delete('/post/delete/', async (req, res) => {
     }
 })
 //UPDATE
-adm.put('/post/update/', async (req, res) => {
+adm.put('/post/update/', checkToken, async (req, res) => {
     const updatePost: Ipost = {
         titulo: req.body.titulo,
         noticia: req.body.noticia,
@@ -97,15 +98,20 @@ adm.put('/post/update/', async (req, res) => {
 })
 
 //users
-adm.post('/user/create', async (req, res) => {
+adm.get('/users', checkToken, async (req, res) => {
+    const users = mongoose.model('users', userSchema, 'users')
+    const allUser = await users.find({})
+    res.status(200).json(allUser)
+})
+adm.post('/user/create', checkToken, async (req, res) => {
 
-    const { nome, email, senha, senhaconfirm } = req.body
+    const { nome, email, senha, senhaconfirm, classe } = req.body
     const users = mongoose.model('users', userSchema, 'users')
     const userexist = await users.find({ nome: nome })
     const mailexist = await users.find({ email: email })
 
     //tratamento da request
-    if (!nome || !senha || !email || senhaconfirm) {
+    if (!nome || !senha || !email || !senhaconfirm) {
         return res.status(422).json({ message: "preencha todos os valores" })
     }
     if (senhaconfirm != senha) {
@@ -123,8 +129,8 @@ adm.post('/user/create', async (req, res) => {
 
         nome: nome,
         email: email,
-        senha: senhahash
-
+        senha: senhahash,
+        classe: classe
     }
     const user = new users(insertUser)
     try {
@@ -137,6 +143,18 @@ adm.post('/user/create', async (req, res) => {
 
 
 })
+adm.delete('/user/delete', checkToken, async (req, res) => {
+    const { id } = req.body
+    const users = mongoose.model('users', userSchema, 'users')
+    const user = await users.findById(id)
+    if (!user) {
+        return res.status(404).json({ message: 'user não encontrado' })
+    }
+    await users.deleteOne({ _id: id })
+    res.status(200).json({ message: `usuário ${user.nome} deletado` })
+
+})
+
 adm.post('/user/login', async (req, res) => {
     const { email, senha } = req.body
     if (!senha || !email) {
@@ -144,12 +162,12 @@ adm.post('/user/login', async (req, res) => {
     }
     const users = mongoose.model('users', userSchema, 'users')
     const user = await users.findOne({ email: email })
-    if (!user) {
+    if (!user || !user.senha) {
         return res.status(404).json({ message: "usuário não encontrado" })
 
     }
 
-    const checkpassword = bcrypt.compare(senha, user.senha || '')
+    const checkpassword = bcrypt.compare(senha, user.senha)
     if (!checkpassword) {
         return res.status(422).json({ message: 'senha incorreta' })
     }
@@ -157,8 +175,9 @@ adm.post('/user/login', async (req, res) => {
         const secret = process.env.SECRET
         if (secret) {
             const token = jwt.sign({
-                id: user._id
+                id: user._id, exp: 1475874457
             }, secret)
+
             res.status(200).json({ message: "logado com sucesso", token })
         }
     } catch (err) {
