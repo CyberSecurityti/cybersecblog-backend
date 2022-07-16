@@ -14,6 +14,8 @@ const adm = express()
 
 //READ
 adm.get('/posts', checkToken, async (req, res) => {
+   
+ 
     const posts = mongoose.model('posts', postSchema, 'posts')
 
     try {
@@ -98,11 +100,13 @@ adm.put('/post/update/', checkToken, async (req, res) => {
 })
 
 //users
+//ver todos os usuarios
 adm.get('/users', checkToken, async (req, res) => {
     const users = mongoose.model('users', userSchema, 'users')
     const allUser = await users.find({})
     res.status(200).json(allUser)
 })
+//criar usuarios
 adm.post('/user/create', checkToken, async (req, res) => {
 
     const { nome, email, senha, senhaconfirm, classe } = req.body
@@ -143,6 +147,7 @@ adm.post('/user/create', checkToken, async (req, res) => {
 
 
 })
+//deletar usuarios
 adm.delete('/user/delete', checkToken, async (req, res) => {
     const { id } = req.body
     const users = mongoose.model('users', userSchema, 'users')
