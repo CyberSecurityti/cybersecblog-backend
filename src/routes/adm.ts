@@ -13,7 +13,7 @@ const adm = express()
 //posts
 
 //READ
-adm.get('/posts',checkToken ,async (req, res) => {
+adm.get('/posts', checkToken, async (req, res) => {
     const posts = mongoose.model('posts', postSchema, 'posts')
 
     try {
@@ -23,7 +23,7 @@ adm.get('/posts',checkToken ,async (req, res) => {
         res.sendStatus(400)
     }
 })
-adm.get('/post/:id',checkToken ,async (req, res) => {
+adm.get('/post/:id', checkToken, async (req, res) => {
     const posts = mongoose.model('posts', postSchema, 'posts')
 
     try {
@@ -175,7 +175,7 @@ adm.post('/user/login', async (req, res) => {
         const secret = process.env.SECRET
         if (secret) {
             const token = jwt.sign({
-                id: user._id, exp: 1475874457
+                id: user._id, name: user.nome
             }, secret)
 
             res.status(200).json({ message: "logado com sucesso", token })

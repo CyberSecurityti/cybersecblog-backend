@@ -37,12 +37,13 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 
 
-
+//posts webscraping
 app.use('/posts', posts)
 
+//adm controle de usuários e posts autorais
 app.use('/adm', adm)
-app.get(`/`,(req,res)=>{
 
+app.get(`/`,(req,res)=>{
     res.render(`index.ejs`)
 })
 app.use((req,res)=>{
