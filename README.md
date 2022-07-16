@@ -1,4 +1,6 @@
 # Cybersecblog-backend
+<img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white
+"/>
 backend do <a href="https://github.com/CyberSecurityti/cybersecblog">blog</a> que estamos criando feito com <b>typescript & mongodb.</b> 
 
 Esse projeto está sendo feito por membros da nossa comunidade, criada especialmente para pessoas interessadas na área de TI e SI.
