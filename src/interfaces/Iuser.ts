@@ -1,3 +1,4 @@
+//usuario
 export interface Iuser {
     nome: String
     email: String

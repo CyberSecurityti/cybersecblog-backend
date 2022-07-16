@@ -1,5 +1,5 @@
 import mongoose from "./db";
-
+//schema de post
 const postSchema = new mongoose.Schema({
      titulo:String,
     noticia:String,

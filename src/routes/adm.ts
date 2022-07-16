@@ -1,23 +1,25 @@
+//libs
 import express from 'express'
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+//interfaces
 import { Ipost } from '../interfaces/Ipost'
 import { Iuser } from '../interfaces/Iuser'
+//models
 import mongoose from '../models/db'
 import postSchema from '../models/posts'
 import userSchema from '../models/users'
+//utils
 import crypt from '../util/crypt'
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
+//middlewares
 import checkToken from '../middlewares/checkToken'
+//rota
 const adm = express()
 
 //posts
-
-//READ
+    //READ
 adm.get('/posts', checkToken, async (req, res) => {
-   
- 
     const posts = mongoose.model('posts', postSchema, 'posts')
-
     try {
         let data = await posts.find({})
         res.json(data)
@@ -38,7 +40,7 @@ adm.get('/post/:id', checkToken, async (req, res) => {
 })
 
 
-//CREATE
+    //CREATE
 adm.post(`/post/create`, checkToken, async (req, res) => {
 
     const insertPost: Ipost = {
@@ -57,7 +59,7 @@ adm.post(`/post/create`, checkToken, async (req, res) => {
         res.sendStatus(400)
     }
 })
-//DELETE
+    //DELETE
 adm.delete('/post/delete/', checkToken, async (req, res) => {
 
     const posts = mongoose.model('posts', postSchema, 'posts')
@@ -74,7 +76,7 @@ adm.delete('/post/delete/', checkToken, async (req, res) => {
         res.sendStatus(400)
     }
 })
-//UPDATE
+    //UPDATE
 adm.put('/post/update/', checkToken, async (req, res) => {
     const updatePost: Ipost = {
         titulo: req.body.titulo,
@@ -100,13 +102,13 @@ adm.put('/post/update/', checkToken, async (req, res) => {
 })
 
 //users
-//ver todos os usuarios
+    //ver todos os usuarios
 adm.get('/users', checkToken, async (req, res) => {
     const users = mongoose.model('users', userSchema, 'users')
     const allUser = await users.find({})
     res.status(200).json(allUser)
 })
-//criar usuarios
+    //criar usuarios
 adm.post('/user/create', checkToken, async (req, res) => {
 
     const { nome, email, senha, senhaconfirm, classe } = req.body
@@ -159,7 +161,7 @@ adm.delete('/user/delete', checkToken, async (req, res) => {
     res.status(200).json({ message: `usuário ${user.nome} deletado` })
 
 })
-
+//logar
 adm.post('/user/login', async (req, res) => {
     const { email, senha } = req.body
     if (!senha || !email) {

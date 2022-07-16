@@ -1,3 +1,4 @@
+//post autoral
 export interface Ipost{
     titulo:string
     noticia:string
