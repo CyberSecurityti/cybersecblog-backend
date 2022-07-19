@@ -43,11 +43,9 @@ app.use('/posts', posts)
 //adm controle de usuários e posts autorais
 app.use('/adm', adm)
 
-app.get(`/`,(req,res)=>{
-    res.render(`index.ejs`)
-})
+
 app.use((req,res)=>{
-    res.status(404).send('Not found')
+    res.status(404).json({message:`not found`})
 })
 
 
